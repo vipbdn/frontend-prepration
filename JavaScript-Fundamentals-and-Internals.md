@@ -582,3 +582,732 @@ After `test()` finishes, if the object has no remaining references, it can becom
 - Spread creates a **shallow copy**, not a deep copy.
 - Unreachable objects can eventually be cleaned up by **Garbage Collection**.
 - Don't say "all primitives are always in Stack and all objects are always in Heap" as a strict rule.
+
+# JavaScript — Lexical Environment & Scope Chain
+
+## What is Lexical Environment?
+
+A **Lexical Environment** is an internal structure JavaScript uses to keep track of variables/functions and their relationship with the surrounding scope.
+
+Think:
+
+> "Where are my variables, and where should I look if I can't find one here?"
+
+Example:
+
+```js
+const x = 10;
+
+function test() {
+  const y = 20;
+
+  console.log(x);
+  console.log(y);
+}
+
+test();
+```
+
+Conceptually:
+
+```text
+Global Lexical Environment
+├── x → 10
+└── test → function
+       │
+       ▼
+Function Lexical Environment
+└── y → 20
+```
+
+---
+
+## Execution Context vs Lexical Environment
+
+These concepts are related but not the same.
+
+| Execution Context                                                                     | Lexical Environment                                                          |
+| ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Represents the overall environment in which code executes                             | Manages identifiers such as variables/functions and scope relationships      |
+| Concerned with **code execution**                                                     | Concerned with **variable lookup and scope**                                 |
+| Includes information needed for execution, such as `this` and environment information | Contains variable/function bindings and a reference to the outer environment |
+| Example: Function Execution Context                                                   | Example: `test()` Lexical Environment                                        |
+
+### Easy Mental Model
+
+```text
+Execution Context
+    ↓
+"How is this code being executed?"
+
+Lexical Environment
+    ↓
+"Where are my variables/functions,
+and where should I look if I can't find one here?"
+```
+
+> This is a practical interview mental model. ECMAScript specification terminology is more nuanced.
+
+---
+
+## Outer Environment Reference
+
+A Lexical Environment has a relationship/reference to its outer environment.
+
+```text
+inner Lexical Environment
+        │
+        ▼
+outer Lexical Environment
+        │
+        ▼
+Global Lexical Environment
+```
+
+This relationship allows JavaScript to search for variables outside the current scope.
+
+---
+
+# Scope Chain
+
+## What is Scope Chain?
+
+The **Scope Chain** is the chain of Lexical Environments JavaScript searches when looking for a variable.
+
+Example:
+
+```js
+const x = 10;
+
+function test() {
+  const y = 20;
+
+  function inner() {
+    const z = 30;
+
+    console.log(x);
+    console.log(y);
+    console.log(z);
+  }
+
+  inner();
+}
+
+test();
+```
+
+Conceptually:
+
+```text
+inner Lexical Environment
+        ↓
+test Lexical Environment
+        ↓
+Global Lexical Environment
+```
+
+---
+
+## Variable Lookup
+
+JavaScript searches from the **current environment outward**.
+
+For example:
+
+```js
+function outer() {
+  const x = 20;
+
+  function inner() {
+    console.log(x);
+  }
+
+  inner();
+}
+```
+
+When `inner()` accesses `x`:
+
+```text
+1. inner environment → x? ❌
+2. outer environment → x? ✅
+3. Stop searching
+```
+
+JavaScript stops as soon as it finds the variable.
+
+---
+
+## Shadowing
+
+An inner variable can have the same name as an outer variable.
+
+```js
+const x = 10;
+
+function test() {
+  const x = 20;
+
+  function inner() {
+    const x = 30;
+
+    console.log(x);
+  }
+
+  inner();
+}
+
+test();
+```
+
+Output:
+
+```text
+30
+```
+
+Lookup:
+
+```text
+inner → x = 30 ✅
+test  → x = 20
+global → x = 10
+```
+
+The closest matching variable is used.
+
+---
+
+## Scope Lookup Direction
+
+Variable lookup generally follows:
+
+```text
+Current Scope
+     ↓
+Outer Scope
+     ↓
+Global Scope
+```
+
+It does **not** search from outer scope into unrelated inner scopes.
+
+Example:
+
+```js
+function test() {
+  console.log(x);
+}
+
+function another() {
+  const x = 20;
+}
+
+test();
+```
+
+`test()` cannot access `x` from `another()` because `another()` is not its lexical parent.
+
+---
+
+## Lexical Scope
+
+JavaScript uses **lexical scoping**.
+
+This means a function's accessible outer variables are determined by **where the function is written**, not where it is called.
+
+```js
+const x = "global";
+
+function outer() {
+  const x = "outer";
+
+  function inner() {
+    console.log(x);
+  }
+
+  return inner;
+}
+
+const fn = outer();
+
+fn(); // outer
+```
+
+`inner()` was written inside `outer()`, so its scope chain includes `outer()`.
+
+This concept is the foundation of **Closures**.
+
+---
+
+## Interview Answer — Lexical Environment
+
+> "A Lexical Environment is an internal structure used by JavaScript to store variable and function bindings and maintain a reference to the outer environment. This allows JavaScript to resolve variables through the scope chain."
+
+## Interview Answer — Scope Chain
+
+> "The Scope Chain is the chain of lexical environments JavaScript searches when resolving a variable. It starts from the current scope and moves outward until the variable is found or the global scope is reached."
+
+---
+
+## Key Takeaways
+
+- Lexical Environment manages variable/function bindings and scope relationships.
+- Execution Context represents the overall environment in which code executes.
+- A Lexical Environment has a relationship/reference to its outer environment.
+- Scope Chain is the process/path used for variable lookup through these environments.
+- Variable lookup goes **inner → outer → global**.
+- JavaScript stops searching when it finds the variable.
+- Inner variables can **shadow** outer variables.
+- JavaScript uses **lexical scoping**.
+- A function's scope is determined by **where it is written**, not where it is called.
+- Lexical Environment + Scope Chain are fundamental to understanding **Closures**.
+
+# JavaScript — Scope & Environments
+
+## 1. Lexical Environment
+
+A **Lexical Environment** is an internal structure JavaScript uses to keep track of variable/function bindings and their relationship with the surrounding scope.
+
+Think:
+
+> "Where are my variables, and where should I look if I can't find one here?"
+
+Example:
+
+```js
+const x = 10;
+
+function test() {
+  const y = 20;
+
+  console.log(x);
+  console.log(y);
+}
+
+test();
+```
+
+Conceptually:
+
+```text
+Global Lexical Environment
+├── x → 10
+└── test → function
+       │
+       ▼
+Function Lexical Environment
+└── y → 20
+```
+
+---
+
+# 2. Execution Context vs Lexical Environment
+
+These concepts are related but not the same.
+
+| Execution Context                                                                     | Lexical Environment                                                          |
+| ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Represents the overall environment in which code executes                             | Manages identifiers and scope relationships                                  |
+| Concerned with code execution                                                         | Concerned with variable lookup and scope                                     |
+| Includes information needed for execution, such as `this` and environment information | Contains variable/function bindings and a reference to the outer environment |
+| Example: Function Execution Context                                                   | Example: `test()` Lexical Environment                                        |
+
+### Easy Mental Model
+
+```text
+Execution Context
+    ↓
+"How is this code being executed?"
+
+Lexical Environment
+    ↓
+"Where are my variables/functions,
+and where should I look if I can't find one here?"
+```
+
+> This is a practical interview mental model. ECMAScript specification terminology is more nuanced.
+
+---
+
+# 3. Variable Environment
+
+**Variable Environment** is a specification concept used to describe how variable declarations, especially `var`, are handled within an execution environment.
+
+A useful interview mental model:
+
+```text
+var       → Function scoped
+let/const → Block scoped
+```
+
+Example:
+
+```js
+function test() {
+  var a = 10;
+  let b = 20;
+  const c = 30;
+}
+```
+
+Conceptually:
+
+```text
+test() Environment
+├── var a → 10
+└── lexical bindings
+    ├── b → 20
+    └── c → 30
+```
+
+> Don't treat Variable Environment and Lexical Environment as completely separate physical memory areas. They are specification concepts; JavaScript engines can implement them differently.
+
+---
+
+# 4. Scope Chain
+
+The **Scope Chain** is the chain of environments JavaScript searches when resolving a variable.
+
+Example:
+
+```js
+const x = 10;
+
+function test() {
+  const y = 20;
+
+  function inner() {
+    const z = 30;
+
+    console.log(x);
+    console.log(y);
+    console.log(z);
+  }
+
+  inner();
+}
+
+test();
+```
+
+Lookup:
+
+```text
+inner()
+   ↓
+test()
+   ↓
+Global
+```
+
+JavaScript searches from the **current environment outward**.
+
+If a variable is found, the search stops.
+
+---
+
+# 5. Variable Shadowing
+
+An inner scope can declare a variable with the same name as an outer scope.
+
+```js
+const x = 10;
+
+function test() {
+  const x = 20;
+
+  function inner() {
+    const x = 30;
+
+    console.log(x);
+  }
+
+  inner();
+}
+
+test();
+```
+
+Output:
+
+```text
+30
+```
+
+Lookup:
+
+```text
+inner → x = 30 ✅
+test  → x = 20
+global → x = 10
+```
+
+The closest matching variable is used.
+
+---
+
+# 6. Lexical Scoping
+
+JavaScript uses **lexical scoping**.
+
+A function's accessible outer variables are determined by **where the function is written**, not where it is called.
+
+```js
+const x = "global";
+
+function outer() {
+  const x = "outer";
+
+  function inner() {
+    console.log(x);
+  }
+
+  return inner;
+}
+
+const fn = outer();
+
+fn(); // "outer"
+```
+
+`inner()` was written inside `outer()`, so its scope chain includes `outer()`.
+
+This is the foundation of **Closures**.
+
+---
+
+# 7. Global Scope
+
+**Global Scope** is the outermost scope of a JavaScript program.
+
+```js
+const x = 10;
+
+function test() {
+  console.log(x);
+}
+
+test(); // 10
+```
+
+`test()` can access `x` because it doesn't have its own `x`.
+
+Conceptually:
+
+```text
+Global Scope
+├── x → 10
+└── test → function
+```
+
+But the reverse isn't true:
+
+```js
+function test() {
+  const y = 20;
+}
+
+test();
+
+console.log(y); // ReferenceError
+```
+
+Global code cannot access a local function variable.
+
+---
+
+# 8. Function Scope
+
+A variable has **function scope** when it is accessible throughout the function where it is declared.
+
+`var` is function-scoped.
+
+```js
+function test() {
+  var x = 10;
+
+  if (true) {
+    var y = 20;
+  }
+
+  console.log(x); // 10
+  console.log(y); // 20
+}
+```
+
+Even though `y` is declared inside the `if`, it is accessible throughout the function because `var` is not block-scoped.
+
+### Important
+
+```text
+var → Function Scope
+```
+
+---
+
+# 9. Block Scope
+
+A variable has **block scope** when it is accessible only inside the `{ }` block where it is declared.
+
+`let` and `const` are block-scoped.
+
+```js
+if (true) {
+  let x = 10;
+  const y = 20;
+
+  console.log(x); // 10
+  console.log(y); // 20
+}
+
+console.log(x); // ReferenceError
+console.log(y); // ReferenceError
+```
+
+Conceptually:
+
+```text
+Global Scope
+└── if Block Scope
+    ├── x → 10
+    └── y → 20
+```
+
+Blocks can be created by:
+
+```js
+if (true) {
+  let x = 10;
+}
+
+for (let i = 0; i < 3; i++) {
+  // i is block scoped
+}
+
+{
+  let y = 20;
+}
+```
+
+---
+
+# 10. `var` vs `let` vs `const`
+
+| Feature                     | `var`       | `let` | `const` |
+| --------------------------- | ----------- | ----- | ------- |
+| Scope                       | Function    | Block | Block   |
+| Can redeclare in same scope | Yes         | No    | No      |
+| Can reassign                | Yes         | Yes   | No      |
+| Hoisted                     | Yes         | Yes   | Yes     |
+| Access before declaration   | `undefined` | TDZ   | TDZ     |
+
+Example:
+
+```js
+function test() {
+  var a = 10;
+
+  if (true) {
+    let b = 20;
+    const c = 30;
+  }
+
+  console.log(a); // 10
+  console.log(b); // ReferenceError
+  console.log(c); // ReferenceError
+}
+```
+
+---
+
+# 11. Scope Chain Example
+
+```js
+const x = 10;
+
+function outer() {
+  const y = 20;
+
+  function inner() {
+    const z = 30;
+
+    console.log(x);
+    console.log(y);
+    console.log(z);
+  }
+
+  inner();
+}
+
+outer();
+```
+
+Output:
+
+```text
+10
+20
+30
+```
+
+Conceptually:
+
+```text
+Global Lexical Environment
+└── x = 10
+    │
+    └── outer() Environment
+        └── y = 20
+            │
+            └── inner() Environment
+                └── z = 30
+```
+
+Lookup:
+
+```text
+inner → outer → global
+```
+
+---
+
+# 12. Interview Answers
+
+### What is Lexical Environment?
+
+> "A Lexical Environment is an internal structure used by JavaScript to store variable and function bindings and maintain a relationship with the outer environment. It helps JavaScript resolve variables through the scope chain."
+
+### What is Scope Chain?
+
+> "The Scope Chain is the chain of lexical environments JavaScript searches when resolving a variable. It starts from the current scope and moves outward until the variable is found or the global scope is reached."
+
+### What is Global Scope?
+
+> "Global Scope is the outermost scope of a JavaScript program. Variables declared there can generally be accessed from nested scopes unless they are shadowed."
+
+### What is Function Scope?
+
+> "Function Scope means a variable is accessible throughout the function in which it is declared. `var` is function-scoped."
+
+### What is Block Scope?
+
+> "Block Scope means a variable is accessible only inside the block where it is declared. `let` and `const` are block-scoped."
+
+---
+
+# Key Takeaways
+
+- **Execution Context** → overall environment in which code executes.
+- **Lexical Environment** → manages variable/function bindings and scope relationships.
+- **Variable Environment** → specification concept related to variable declarations.
+- **Scope Chain** → path JavaScript follows to resolve variables.
+- Variable lookup goes **inner → outer → global**.
+- JavaScript uses **lexical scoping**.
+- Inner variables can **shadow** outer variables.
+- `var` → **function scoped**.
+- `let` → **block scoped**.
+- `const` → **block scoped**.
+- `let` and `const` have a **Temporal Dead Zone (TDZ)** before initialization.
+- Function scope and block scope are different.
+- Lexical Environment + Scope Chain are fundamental to understanding **Closures**.
