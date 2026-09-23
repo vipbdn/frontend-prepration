@@ -1311,3 +1311,802 @@ inner → outer → global
 - `let` and `const` have a **Temporal Dead Zone (TDZ)** before initialization.
 - Function scope and block scope are different.
 - Lexical Environment + Scope Chain are fundamental to understanding **Closures**.
+
+# JavaScript — Variables & Hoisting
+
+## 1. `var` vs `let` vs `const`
+
+| Feature                        | `var`       | `let`  | `const` |
+| ------------------------------ | ----------- | ------ | ------- |
+| Function scoped                | ✅          | ❌     | ❌      |
+| Block scoped                   | ❌          | ✅     | ✅      |
+| Redeclaration                  | ✅          | ❌     | ❌      |
+| Reassignment                   | ✅          | ✅     | ❌      |
+| Hoisted/processed              | ✅          | ✅     | ✅      |
+| Initialized before declaration | `undefined` | ❌ TDZ | ❌ TDZ  |
+
+### `var`
+
+```js
+function test() {
+  if (true) {
+    var x = 10;
+  }
+
+  console.log(x); // 10
+}
+```
+
+`var` is function-scoped, not block-scoped.
+
+### `let`
+
+```js
+if (true) {
+  let x = 10;
+}
+
+console.log(x); // ReferenceError
+```
+
+`let` is block-scoped.
+
+### `const`
+
+```js
+const x = 10;
+
+x = 20; // TypeError
+```
+
+`const` cannot be reassigned.
+
+But objects declared with `const` can still be mutated:
+
+```js
+const user = {
+  name: "Vipin",
+};
+
+user.name = "Rahul"; // ✅
+```
+
+`const` protects the binding, not the object's contents.
+
+---
+
+# 2. Hoisting
+
+Hoisting is the behavior where JavaScript processes declarations before executing the code in that scope.
+
+A better technical explanation:
+
+> JavaScript creates bindings during the creation/setup phase before execution reaches the declaration.
+
+It does **not literally move code to the top**.
+
+---
+
+## `var` Hoisting
+
+```js
+console.log(x);
+
+var x = 10;
+```
+
+Output:
+
+```text
+undefined
+```
+
+Mental model:
+
+```text
+Creation:
+x → undefined
+
+Execution:
+console.log(x) → undefined
+x = 10
+```
+
+### Interview answer
+
+> `var` is hoisted and initialized with `undefined` during the creation phase.
+
+---
+
+# 3. Temporal Dead Zone (TDZ)
+
+`let` and `const` are hoisted/processed, but their bindings remain **uninitialized** until execution reaches their declaration.
+
+The period between entering the scope and initialization is the **Temporal Dead Zone**.
+
+```js
+console.log(x); // ReferenceError
+
+let x = 10;
+```
+
+Mental model:
+
+```text
+Scope entered
+     ↓
+x → uninitialized
+     ↓
+    TDZ
+     ↓
+console.log(x)
+     ↓
+ReferenceError
+     ↓
+let x = 10
+     ↓
+x → 10
+```
+
+### Important
+
+Do not say:
+
+> "`let` and `const` are not hoisted."
+
+Better:
+
+> `let` and `const` are hoisted/processed, but remain uninitialized in the TDZ.
+
+---
+
+## TDZ ends at initialization
+
+```js
+console.log(a); // ReferenceError
+
+let a;
+
+console.log(a); // undefined
+```
+
+After execution reaches:
+
+```js
+let a;
+```
+
+`a` is initialized with `undefined`.
+
+```text
+Before `let a`:
+a → uninitialized → TDZ
+
+After `let a`:
+a → undefined
+```
+
+---
+
+# 4. Variable Initialization
+
+Always distinguish:
+
+```text
+Declaration → Initialization → Assignment
+```
+
+Example:
+
+```js
+var x = 10;
+```
+
+Conceptually:
+
+```text
+Declaration:
+x exists
+
+Initialization:
+x = undefined
+
+Assignment:
+x = 10
+```
+
+For `let`:
+
+```js
+let x = 10;
+```
+
+```text
+Creation:
+x → uninitialized
+     ↓
+    TDZ
+
+Execution reaches declaration:
+x → 10
+```
+
+For:
+
+```js
+let x;
+```
+
+After execution reaches the declaration:
+
+```text
+x → undefined
+```
+
+### `const` must be initialized
+
+```js
+const x; // SyntaxError
+```
+
+Unlike `let`:
+
+```js
+let x; // ✅
+```
+
+---
+
+# 5. Function Hoisting
+
+Function declarations are hoisted with their function object.
+
+```js
+sayHello();
+
+function sayHello() {
+  console.log("Hello");
+}
+```
+
+Output:
+
+```text
+Hello
+```
+
+Mental model:
+
+```text
+Creation phase:
+
+sayHello → actual function
+```
+
+Therefore the function can be called before its declaration.
+
+### Interview answer
+
+> Function declarations are hoisted with their function object, so they can be called before their declaration in the source code.
+
+---
+
+# 6. Function Declaration vs Function Expression
+
+## Function Declaration
+
+```js
+greet();
+
+function greet() {
+  console.log("Hello");
+}
+```
+
+✅ Works.
+
+---
+
+## Function Expression with `var`
+
+```js
+greet();
+
+var greet = function () {
+  console.log("Hello");
+};
+```
+
+❌ `TypeError`
+
+Because:
+
+```text
+Creation:
+greet → undefined
+
+Execution:
+greet()
+↓
+undefined()
+↓
+TypeError
+```
+
+---
+
+## Function Expression with `let`
+
+```js
+greet();
+
+let greet = function () {
+  console.log("Hello");
+};
+```
+
+❌ `ReferenceError`
+
+Because `greet` is in the TDZ.
+
+---
+
+## Function Expression with `const`
+
+```js
+greet();
+
+const greet = function () {
+  console.log("Hello");
+};
+```
+
+❌ `ReferenceError`
+
+Same TDZ behavior.
+
+---
+
+# 7. `typeof` + Hoisting Trap
+
+With `var`:
+
+```js
+console.log(typeof greet);
+
+var greet = function () {};
+```
+
+Output:
+
+```text
+"undefined"
+```
+
+But with `let`:
+
+```js
+console.log(typeof greet);
+
+let greet = function () {};
+```
+
+Output:
+
+```text
+ReferenceError
+```
+
+Why?
+
+`typeof` does not bypass the TDZ.
+
+Compare:
+
+```js
+console.log(typeof unknownVariable);
+```
+
+Output:
+
+```text
+"undefined"
+```
+
+A completely undeclared identifier is different from a declared-but-uninitialized `let`/`const` binding.
+
+---
+
+# 8. Interview Trap — Function Declaration + `var`
+
+```js
+sayHello();
+
+var sayHello = function () {
+  console.log("Hello");
+};
+
+function sayHello() {
+  console.log("Hi");
+}
+```
+
+Output:
+
+```text
+Hi
+```
+
+### Why?
+
+During creation:
+
+```text
+sayHello → function declaration
+```
+
+The function declaration is available.
+
+During execution:
+
+```js
+sayHello();
+```
+
+calls the `"Hi"` function.
+
+Then:
+
+```js
+var sayHello = function () {
+  console.log("Hello");
+};
+```
+
+reassigns the existing binding.
+
+Now:
+
+```text
+sayHello → "Hello" function
+```
+
+Therefore:
+
+```js
+sayHello();
+```
+
+after the assignment would print:
+
+```text
+Hello
+```
+
+Complete example:
+
+```js
+sayHello();
+
+var sayHello = function () {
+  console.log("Hello");
+};
+
+function sayHello() {
+  console.log("Hi");
+}
+
+sayHello();
+```
+
+Output:
+
+```text
+Hi
+Hello
+```
+
+---
+
+# 9. Interview Trap — Function Declaration + `var` Assignment
+
+```js
+foo();
+
+var foo = 10;
+
+function foo() {
+  console.log("Hello");
+}
+
+foo();
+```
+
+Output:
+
+```text
+Hello
+TypeError
+```
+
+### Why?
+
+Creation phase:
+
+```text
+foo → function
+```
+
+First call:
+
+```text
+foo() → Hello
+```
+
+Then:
+
+```js
+foo = 10;
+```
+
+Now:
+
+```text
+foo → 10
+```
+
+Second call:
+
+```js
+foo();
+```
+
+is effectively:
+
+```js
+10();
+```
+
+Therefore:
+
+```text
+TypeError
+```
+
+---
+
+# 10. Interview Trap — `var` Function Expression
+
+```js
+foo();
+
+var foo = function () {
+  console.log("Hello");
+};
+```
+
+Output:
+
+```text
+TypeError
+```
+
+Because:
+
+```text
+Creation:
+foo → undefined
+
+Execution:
+foo()
+↓
+undefined()
+↓
+TypeError
+```
+
+---
+
+# 11. Interview Trap — `let` Function Expression
+
+```js
+foo();
+
+let foo = function () {
+  console.log("Hello");
+};
+```
+
+Output:
+
+```text
+ReferenceError
+```
+
+Because:
+
+```text
+foo → uninitialized
+     ↓
+    TDZ
+     ↓
+foo()
+     ↓
+ReferenceError
+```
+
+---
+
+# 12. Quick Comparison
+
+```text
+Function Declaration
+─────────────────────
+function foo() {}
+        ↓
+foo → actual function
+        ↓
+can call before declaration
+```
+
+```text
+var Function Expression
+────────────────────────
+var foo = function() {}
+        ↓
+foo → undefined
+        ↓
+calling before assignment
+        ↓
+TypeError
+```
+
+```text
+let/const Function Expression
+──────────────────────────────
+let/const foo = function() {}
+        ↓
+foo → uninitialized
+        ↓
+TDZ
+        ↓
+access before declaration
+        ↓
+ReferenceError
+```
+
+---
+
+# 13. Common Interview Traps
+
+### Trap 1
+
+```js
+console.log(a);
+
+var a = 10;
+```
+
+Output:
+
+```text
+undefined
+```
+
+---
+
+### Trap 2
+
+```js
+console.log(a);
+
+let a = 10;
+```
+
+Output:
+
+```text
+ReferenceError
+```
+
+---
+
+### Trap 3
+
+```js
+foo();
+
+var foo = function () {};
+```
+
+Output:
+
+```text
+TypeError
+```
+
+---
+
+### Trap 4
+
+```js
+foo();
+
+let foo = function () {};
+```
+
+Output:
+
+```text
+ReferenceError
+```
+
+---
+
+### Trap 5
+
+```js
+foo();
+
+function foo() {}
+```
+
+Works because function declarations are hoisted with the function object.
+
+---
+
+# 14. Interview-Ready Answers
+
+### What is hoisting?
+
+> Hoisting is the behavior where JavaScript creates/initializes certain bindings during the creation phase before executing the code in that scope. It is not literally moving code to the top.
+
+### Is `let` hoisted?
+
+> Yes, its binding is created during the creation phase, but it remains uninitialized in the Temporal Dead Zone until execution reaches the declaration.
+
+### Why does `var` return `undefined` before declaration?
+
+> Because the `var` binding is initialized with `undefined` during the creation phase.
+
+### Why does `let` throw ReferenceError before declaration?
+
+> Because the binding exists but remains uninitialized in the Temporal Dead Zone.
+
+### Why can function declarations be called before declaration?
+
+> Because function declarations are instantiated with their function object during the creation phase.
+
+### Why does a function expression with `var` give TypeError?
+
+> Because the `var` binding initially contains `undefined`, and calling `undefined` as a function causes a TypeError.
+
+---
+
+# ⭐ Key Takeaways
+
+```text
+1. var → function scoped
+2. let/const → block scoped
+
+3. var → hoisted + initialized as undefined
+4. let/const → hoisted + uninitialized → TDZ
+
+5. TDZ ends when execution reaches the declaration
+
+6. let x; → x becomes undefined after initialization
+
+7. const must be initialized at declaration
+
+8. Function declarations are hoisted with their function object
+
+9. var function expression before assignment → TypeError
+
+10. let/const function expression before declaration → ReferenceError
+
+11. typeof does NOT bypass TDZ
+
+12. Hoisting does not literally mean moving code to the top
+```
+
+This completes your **Variables & Hoisting** bucket. Next in the roadmap, we can move into the next JavaScript internals topic while keeping the same **concept → output questions → interview traps → GitHub notes** approach.
