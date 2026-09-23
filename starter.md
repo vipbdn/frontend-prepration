@@ -10,7 +10,7 @@
 
 | Section                             | Status         |
 | ----------------------------------- | -------------- |
-| JavaScript Fundamentals & Internals | ⬜ Not Started |
+| JavaScript Fundamentals & Internals | ✅Completed |
 | Closures & Functional JavaScript    | ⬜ Not Started |
 | Objects & Prototypes                | ⬜ Not Started |
 | Arrays & Data Transformation        | ⬜ Not Started |
@@ -52,17 +52,17 @@
 
 ## Execution & Scope
 
-- [ ] ⭐ Execution Context
-- [ ] ⭐ Global Execution Context
-- [ ] ⭐ Function Execution Context
-- [ ] ⭐ Call Stack
-- [ ] ⭐ Heap / Memory
-- [ ] ⭐ Lexical Environment
-- [ ] ⭐ Scope Chain
-- [ ] ⭐ Variable Environment
-- [ ] ⭐ Global Scope
-- [ ] ⭐ Function Scope
-- [ ] ⭐ Block Scope
+- [✅ ] ⭐ Execution Context
+- [✅ ] ⭐ Global Execution Context
+- [✅ ] ⭐ Function Execution Context
+- [✅ ] ⭐ Call Stack
+- [✅ ] ⭐ Heap / Memory
+- [✅ ] ⭐ Lexical Environment
+- [✅ ] ⭐ Scope Chain
+- [✅ ] ⭐ Variable Environment
+- [✅ ] ⭐ Global Scope
+- [✅ ] ⭐ Function Scope
+- [✅ ] ⭐ Block Scope
 
 ## Variables & Hoisting
 
