@@ -2110,3 +2110,889 @@ Works because function declarations are hoisted with the function object.
 ```
 
 This completes your **Variables & Hoisting** bucket. Next in the roadmap, we can move into the next JavaScript internals topic while keeping the same **concept → output questions → interview traps → GitHub notes** approach.
+# JavaScript — Primitive vs Reference Types & Type Coercion
+
+> Interview-focused notes with mental models, examples, common traps, and key takeaways.
+
+---
+
+# 1. Primitive vs Reference Types
+
+## Primitive Types
+
+JavaScript has **7 primitive types**:
+
+```text
+string
+number
+boolean
+undefined
+null
+bigint
+symbol
+```
+
+Primitives represent **single immutable values**.
+
+```js
+let x = 10;
+let y = x;
+
+y = 20;
+
+console.log(x); // 10
+console.log(y); // 20
+```
+
+### Mental Model
+
+When assigning a primitive:
+
+```text
+x ──→ 10
+
+y = x
+
+x ──→ 10
+y ──→ 10
+
+y = 20
+
+x ──→ 10
+y ──→ 20
+```
+
+The value is copied.
+
+---
+
+# Reference Types
+
+Objects, arrays, and functions are reference values.
+
+```js
+const user1 = {
+  name: "Vipin"
+};
+
+const user2 = user1;
+
+user2.name = "Rahul";
+
+console.log(user1.name); // Rahul
+console.log(user2.name); // Rahul
+```
+
+### Mental Model
+
+```text
+user1 ──────┐
+            ↓
+       ┌──────────────┐
+       │ name: Rahul  │
+       └──────────────┘
+            ↑
+user2 ──────┘
+```
+
+Both variables refer to the **same object**.
+
+### Important Interview Wording
+
+Don't say:
+
+> "user1 contains the object."
+
+Better:
+
+> "`user1` holds a reference to the object."
+
+---
+
+# Primitive vs Reference
+
+| Primitive                   | Reference                               |
+| --------------------------- | --------------------------------------- |
+| Stores a value              | Variable holds a reference to an object |
+| Immutable                   | Objects are generally mutable           |
+| Assignment copies the value | Assignment copies the reference         |
+| Compared by value           | Objects compared by reference identity  |
+
+Example:
+
+```js
+let a = 10;
+let b = a;
+
+b = 20;
+
+console.log(a); // 10
+```
+
+Versus:
+
+```js
+const a = { value: 10 };
+const b = a;
+
+b.value = 20;
+
+console.log(a.value); // 20
+```
+
+---
+
+# Object Equality
+
+```js
+const a = {};
+const b = {};
+const c = a;
+
+console.log(a === b); // false
+console.log(a === c); // true
+```
+
+Why?
+
+```text
+a ─────→ Object #1
+c ─────→ Object #1
+
+b ─────→ Object #2
+```
+
+`a` and `b` are different objects.
+
+`a` and `c` reference the same object.
+
+### Key Rule
+
+```js
+{} === {} // false
+```
+
+Two separately created objects are different references.
+
+```js
+const a = {};
+const b = a;
+
+a === b // true
+```
+
+---
+
+# Shallow Copy
+
+The spread operator creates a **shallow copy**:
+
+```js
+const user1 = {
+  name: "Vipin",
+  address: {
+    city: "Noida"
+  }
+};
+
+const user2 = { ...user1 };
+
+user2.name = "Rahul";
+user2.address.city = "Delhi";
+
+console.log(user1.name);         // "Vipin"
+console.log(user1.address.city); // "Delhi"
+```
+
+### Why?
+
+Top-level properties are copied:
+
+```text
+user1 ─────→ Object #1
+             name: "Vipin"
+             address ─────┐
+                          │
+user2 ─────→ Object #2    │
+             name: "Rahul"│
+             address ─────┘
+                          ↓
+                    { city: "Delhi" }
+```
+
+`name` is a primitive → copied independently.
+
+`address` is an object → nested reference is shared.
+
+### Interview Answer
+
+> A shallow copy creates a new top-level object, but nested objects and arrays still contain references to the original nested values.
+
+---
+
+# Important Memory Note
+
+Avoid saying:
+
+> "Primitives are always stored in Stack and objects are always stored in Heap."
+
+That's an oversimplification.
+
+The exact memory implementation depends on the JavaScript engine.
+
+For interviews, focus on the observable behavior:
+
+```text
+Primitive assignment → value copied
+
+Object assignment → reference copied
+```
+
+---
+
+# Primitive vs Reference — Interview Traps
+
+### Trap 1
+
+```js
+let a = 10;
+let b = a;
+
+b = 20;
+
+console.log(a); // 10
+console.log(b); // 20
+```
+
+### Trap 2
+
+```js
+const a = { value: 10 };
+const b = a;
+
+b.value = 20;
+
+console.log(a.value); // 20
+```
+
+### Trap 3
+
+```js
+const a = {};
+const b = {};
+
+console.log(a === b); // false
+```
+
+### Trap 4
+
+```js
+const a = {};
+const b = a;
+
+console.log(a === b); // true
+```
+
+### Trap 5 — Shallow Copy
+
+```js
+const a = {
+  name: "Vipin",
+  address: {
+    city: "Noida"
+  }
+};
+
+const b = { ...a };
+
+b.name = "Rahul";
+b.address.city = "Delhi";
+
+console.log(a.name);         // "Vipin"
+console.log(a.address.city); // "Delhi"
+```
+
+---
+
+# Key Takeaways — Primitive vs Reference
+
+* JavaScript has **7 primitive types**.
+* Primitive values are immutable.
+* Primitive assignment copies the value.
+* Objects/arrays/functions are reference values.
+* Object assignment copies the reference.
+* Two variables can reference the same object.
+* `===` compares object identity/reference.
+* `{}` and `{}` are different objects.
+* `{ ...obj }` creates a shallow copy.
+* Shallow copies don't recursively copy nested objects.
+* Avoid oversimplifying JavaScript memory as "stack vs heap."
+
+---
+
+# 2. ⭐ Type Coercion
+
+## What is Type Coercion?
+
+**Type coercion** is the conversion of one type into another during an operation.
+
+### Implicit Coercion
+
+JavaScript performs the conversion automatically:
+
+```js
+"5" - 2; // 3
+```
+
+### Explicit Coercion
+
+The developer performs the conversion:
+
+```js
+Number("5");   // 5
+String(5);     // "5"
+Boolean(1);    // true
+```
+
+---
+
+# The Type Coercion Mental Model
+
+Whenever you see a coercion question, ask:
+
+```text
+1. Which operator is being used?
+          ↓
+2. What does that operator expect?
+          ↓
+3. How are the values converted?
+          ↓
+4. What is the final operation?
+```
+
+This is much better than memorizing random outputs.
+
+---
+
+# `+` Is Special
+
+The `+` operator can perform:
+
+```text
+Number + Number → addition
+
+String + anything → string concatenation
+```
+
+Example:
+
+```js
+"5" + 2;
+```
+
+Because a string is involved:
+
+```text
+"5" + 2
+ ↓
+"5" + "2"
+ ↓
+"52"
+```
+
+```js
+"5" + 2;     // "52"
+"5" + true;  // "5true"
+"5" + null;  // "5null"
+```
+
+### Important Trap
+
+Do NOT think:
+
+```text
+"5" + true
+↓
+"5" + 1
+↓
+6
+```
+
+That's wrong.
+
+`+` chooses string concatenation when a string is involved.
+
+---
+
+# Numeric Operators
+
+These generally perform numeric coercion:
+
+```text
+-
+*
+/
+%
+```
+
+Example:
+
+```js
+"5" - 2; // 3
+```
+
+Conversion:
+
+```text
+"5" → 5
+
+5 - 2 → 3
+```
+
+Examples:
+
+```js
+"5" - 2; // 3
+"5" * 2; // 10
+"5" / 2; // 2.5
+"5" % 2; // 1
+```
+
+---
+
+# Number Conversion Table
+
+When JavaScript needs a number:
+
+| Value       | `Number(value)` |
+| ----------- | --------------: |
+| `"5"`       |             `5` |
+| `""`        |             `0` |
+| `" "`       |             `0` |
+| `"hello"`   |           `NaN` |
+| `true`      |             `1` |
+| `false`     |             `0` |
+| `null`      |             `0` |
+| `undefined` |           `NaN` |
+| `[]`        |             `0` |
+| `[5]`       |             `5` |
+| `[1, 2]`    |           `NaN` |
+| `{}`        |           `NaN` |
+
+---
+
+# Boolean Numeric Coercion
+
+When numeric conversion happens:
+
+```text
+true  → 1
+false → 0
+```
+
+Therefore:
+
+```js
+true + 1;  // 2
+false + 1; // 1
+```
+
+But remember:
+
+```js
+typeof true; // "boolean"
+```
+
+`true` doesn't become a number permanently.
+
+It is only converted to a number **for that operation**.
+
+---
+
+# `null` vs `undefined`
+
+This is a very common interview topic.
+
+### Numeric conversion
+
+```text
+null      → 0
+undefined → NaN
+```
+
+Therefore:
+
+```js
+null + 1;       // 1
+undefined + 1;  // NaN
+
+null * 5;       // 0
+undefined * 5;  // NaN
+```
+
+### But don't generalize this to equality
+
+```js
+null == 0;   // false
+null === 0;  // false
+```
+
+`==` has its own special rules.
+
+---
+
+# Empty String
+
+```js
+"" + 1;
+```
+
+Because `+` performs string concatenation:
+
+```text
+"" + 1
+↓
+"" + "1"
+↓
+"1"
+```
+
+Result:
+
+```js
+"1"
+```
+
+But:
+
+```js
+"" - 1;
+```
+
+`-` forces numeric conversion:
+
+```text
+"" → 0
+0 - 1 → -1
+```
+
+Result:
+
+```js
+-1
+```
+
+---
+
+# Object / Array Coercion
+
+Objects can be converted to primitive values during certain operations.
+
+Some important conversions:
+
+```text
+[]    → ""
+[5]   → "5"
+{}    → "[object Object]"
+```
+
+Therefore:
+
+```js
+[] + [];
+```
+
+Conceptually:
+
+```text
+[] → ""
+[] → ""
+
+"" + ""
+↓
+""
+```
+
+Result:
+
+```js
+""
+```
+
+---
+
+# `[] + {}`
+
+```js
+[] + {}
+```
+
+Conceptually:
+
+```text
+[] → ""
+{} → "[object Object]"
+
+"" + "[object Object]"
+```
+
+Result:
+
+```js
+"[object Object]"
+```
+
+---
+
+# `{}` + `[]` — Famous Parsing Trap
+
+This is tricky because JavaScript's parser matters.
+
+```js
+{} + []
+```
+
+At the beginning of a statement, `{}` can be interpreted as an empty block rather than an object literal.
+
+But:
+
+```js
+({} + [])
+```
+
+forces `{}` to be treated as an object expression.
+
+Result:
+
+```js
+({} + []) // "[object Object]"
+```
+
+### Interview Lesson
+
+Don't blindly memorize the output of:
+
+```js
+{} + []
+```
+
+The parsing context matters.
+
+---
+
+# Famous Type Coercion Interview Questions
+
+## 1. String + Number
+
+```js
+"10" + 5; // "105"
+```
+
+## 2. String - Number
+
+```js
+"10" - 5; // 5
+```
+
+## 3. Boolean + Number
+
+```js
+true + 1;  // 2
+false + 1; // 1
+```
+
+## 4. String + Boolean
+
+```js
+"5" + true;  // "5true"
+"5" + false; // "5false"
+```
+
+## 5. String - Boolean
+
+```js
+"5" - true;  // 4
+"5" - false; // 5
+```
+
+## 6. `null`
+
+```js
+null + 1; // 1
+null * 5; // 0
+```
+
+## 7. `undefined`
+
+```js
+undefined + 1; // NaN
+undefined * 5; // NaN
+```
+
+## 8. String + null
+
+```js
+"5" + null; // "5null"
+```
+
+## 9. String + undefined
+
+```js
+"5" + undefined; // "5undefined"
+```
+
+## 10. Empty String
+
+```js
+"" + 1; // "1"
+"" - 1; // -1
+```
+
+## 11. Arrays
+
+```js
+[] + []; // ""
+[] + {}; // "[object Object]"
+```
+
+## 12. Equality Preview
+
+```js
+null == 0;  // false
+null === 0; // false
+```
+
+Equality rules will be covered separately.
+
+---
+
+# High-Value Interview Traps
+
+### Trap A
+
+```js
+console.log("5" + true);
+```
+
+Output:
+
+```text
+"5true"
+```
+
+Not `6`.
+
+---
+
+### Trap B
+
+```js
+console.log("5" - true);
+```
+
+Output:
+
+```text
+4
+```
+
+Because:
+
+```text
+"5" → 5
+true → 1
+
+5 - 1 → 4
+```
+
+---
+
+### Trap C
+
+```js
+console.log(null + 1);
+console.log(undefined + 1);
+```
+
+Output:
+
+```text
+1
+NaN
+```
+
+---
+
+### Trap D
+
+```js
+console.log([] + []);
+console.log([] + {});
+```
+
+Output:
+
+```text
+""
+"[object Object]"
+```
+
+---
+
+# Type Coercion vs Type Conversion
+
+These terms are often used interchangeably, but for interviews:
+
+### Type Coercion
+
+Automatic:
+
+```js
+"5" - 2; // 3
+```
+
+### Type Conversion
+
+Explicit:
+
+```js
+Number("5"); // 5
+```
+
+A useful distinction:
+
+```text
+Coercion   → usually implicit
+Conversion → usually explicit
+```
+
+---
+
+# Interview-Ready Answer
+
+### What is type coercion?
+
+> Type coercion is JavaScript's process of converting a value from one type to another during an operation. It can happen implicitly, such as `"5" - 2`, where `"5"` is converted to `5`, or explicitly using functions like `Number()`, `String()`, and `Boolean()`.
+
+### Why is `+` different?
+
+> The `+` operator can perform either numeric addition or string concatenation. If a string is involved, JavaScript may convert the other operand to a string and concatenate.
+
+---
+
+# Key Takeaways
+
+* Type coercion = conversion between types during an operation.
+* Implicit coercion happens automatically.
+* Explicit conversion is performed by the developer.
+* `+` is special.
+* `+` can perform addition or string concatenation.
+* `-`, `*`, `/`, `%` generally force numeric conversion.
+* `true → 1` during numeric conversion.
+* `false → 0` during numeric conversion.
+* `null → 0` during numeric conversion.
+* `undefined → NaN` during numeric conversion.
+* `NaN` is the result of an invalid numeric conversion.
+* Objects/arrays can be converted to primitive values.
+* Don't memorize random coercion outputs; identify the operator and derive the conversion.
+* `==` has special coercion rules; `===` compares without type coercion.
