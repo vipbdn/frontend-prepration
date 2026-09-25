@@ -10,7 +10,7 @@
 
 | Section                             | Status         |
 | ----------------------------------- | -------------- |
-| JavaScript Fundamentals & Internals | ✅Completed |
+| JavaScript Fundamentals & Internals | ✅Completed    |
 | Closures & Functional JavaScript    | ⬜ Not Started |
 | Objects & Prototypes                | ⬜ Not Started |
 | Arrays & Data Transformation        | ⬜ Not Started |
@@ -66,31 +66,31 @@
 
 ## Variables & Hoisting
 
-- [ ] ⭐ `var` vs `let` vs `const`
-- [ ] ⭐ Hoisting
-- [ ] ⭐ Temporal Dead Zone
-- [ ] Variable initialization
-- [ ] Function hoisting
-- [ ] Function declaration vs expression
+- [✅ ] ⭐ `var` vs `let` vs `const`
+- [✅ ] ⭐ Hoisting
+- [✅ ] ⭐ Temporal Dead Zone
+- [✅ ] Variable initialization
+- [✅ ] Function hoisting
+- [✅ ] Function declaration vs expression
 
 ## Types & Coercion
 
-- [ ] Primitive vs Reference types
-- [ ] ⭐ Type coercion
-- [ ] ⭐ `==` vs `===`
-- [ ] Truthy / Falsy
-- [ ] `null` vs `undefined`
-- [ ] `NaN`
-- [ ] `typeof`
-- [ ] `instanceof`
-- [ ] Optional chaining `?.`
-- [ ] Nullish coalescing `??`
+- [✅ ] Primitive vs Reference types
+- [✅ ] ⭐ Type coercion
+- [✅ ] ⭐ `==` vs `===`
+- [✅ ] Truthy / Falsy
+- [✅ ] `null` vs `undefined`
+- [✅ ] `NaN`
+- [✅ ] `typeof`
+- [✅ ] `instanceof`
+- [✅ ] Optional chaining `?.`
+- [✅ ] Nullish coalescing `??`
 
 ## Strict Mode
 
-- [ ] Strict mode
-- [ ] Differences between strict and non-strict mode
-- [ ] `this` behavior in strict mode
+- [✅ ] Strict mode
+- [✅ ] Differences between strict and non-strict mode
+- [✅ ] `this` behavior in strict mode
 
 ---
 

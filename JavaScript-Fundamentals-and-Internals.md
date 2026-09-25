@@ -2110,6 +2110,7 @@ Works because function declarations are hoisted with the function object.
 ```
 
 This completes your **Variables & Hoisting** bucket. Next in the roadmap, we can move into the next JavaScript internals topic while keeping the same **concept → output questions → interview traps → GitHub notes** approach.
+
 # JavaScript — Primitive vs Reference Types & Type Coercion
 
 > Interview-focused notes with mental models, examples, common traps, and key takeaways.
@@ -2172,7 +2173,7 @@ Objects, arrays, and functions are reference values.
 
 ```js
 const user1 = {
-  name: "Vipin"
+  name: "Vipin",
 };
 
 const user2 = user1;
@@ -2278,7 +2279,7 @@ Two separately created objects are different references.
 const a = {};
 const b = a;
 
-a === b // true
+a === b; // true
 ```
 
 ---
@@ -2291,8 +2292,8 @@ The spread operator creates a **shallow copy**:
 const user1 = {
   name: "Vipin",
   address: {
-    city: "Noida"
-  }
+    city: "Noida",
+  },
 };
 
 const user2 = { ...user1 };
@@ -2300,7 +2301,7 @@ const user2 = { ...user1 };
 user2.name = "Rahul";
 user2.address.city = "Delhi";
 
-console.log(user1.name);         // "Vipin"
+console.log(user1.name); // "Vipin"
 console.log(user1.address.city); // "Delhi"
 ```
 
@@ -2399,8 +2400,8 @@ console.log(a === b); // true
 const a = {
   name: "Vipin",
   address: {
-    city: "Noida"
-  }
+    city: "Noida",
+  },
 };
 
 const b = { ...a };
@@ -2408,7 +2409,7 @@ const b = { ...a };
 b.name = "Rahul";
 b.address.city = "Delhi";
 
-console.log(a.name);         // "Vipin"
+console.log(a.name); // "Vipin"
 console.log(a.address.city); // "Delhi"
 ```
 
@@ -2416,17 +2417,17 @@ console.log(a.address.city); // "Delhi"
 
 # Key Takeaways — Primitive vs Reference
 
-* JavaScript has **7 primitive types**.
-* Primitive values are immutable.
-* Primitive assignment copies the value.
-* Objects/arrays/functions are reference values.
-* Object assignment copies the reference.
-* Two variables can reference the same object.
-* `===` compares object identity/reference.
-* `{}` and `{}` are different objects.
-* `{ ...obj }` creates a shallow copy.
-* Shallow copies don't recursively copy nested objects.
-* Avoid oversimplifying JavaScript memory as "stack vs heap."
+- JavaScript has **7 primitive types**.
+- Primitive values are immutable.
+- Primitive assignment copies the value.
+- Objects/arrays/functions are reference values.
+- Object assignment copies the reference.
+- Two variables can reference the same object.
+- `===` compares object identity/reference.
+- `{}` and `{}` are different objects.
+- `{ ...obj }` creates a shallow copy.
+- Shallow copies don't recursively copy nested objects.
+- Avoid oversimplifying JavaScript memory as "stack vs heap."
 
 ---
 
@@ -2449,9 +2450,9 @@ JavaScript performs the conversion automatically:
 The developer performs the conversion:
 
 ```js
-Number("5");   // 5
-String(5);     // "5"
-Boolean(1);    // true
+Number("5"); // 5
+String(5); // "5"
+Boolean(1); // true
 ```
 
 ---
@@ -2501,9 +2502,9 @@ Because a string is involved:
 ```
 
 ```js
-"5" + 2;     // "52"
-"5" + true;  // "5true"
-"5" + null;  // "5null"
+"5" + 2; // "52"
+"5" + true; // "5true"
+"5" + null; // "5null"
 ```
 
 ### Important Trap
@@ -2593,7 +2594,7 @@ false → 0
 Therefore:
 
 ```js
-true + 1;  // 2
+true + 1; // 2
 false + 1; // 1
 ```
 
@@ -2623,18 +2624,18 @@ undefined → NaN
 Therefore:
 
 ```js
-null + 1;       // 1
-undefined + 1;  // NaN
+null + 1; // 1
+undefined + 1; // NaN
 
-null * 5;       // 0
-undefined * 5;  // NaN
+null * 5; // 0
+undefined * 5; // NaN
 ```
 
 ### But don't generalize this to equality
 
 ```js
-null == 0;   // false
-null === 0;  // false
+null == 0; // false
+null === 0; // false
 ```
 
 `==` has its own special rules.
@@ -2660,7 +2661,7 @@ Because `+` performs string concatenation:
 Result:
 
 ```js
-"1"
+"1";
 ```
 
 But:
@@ -2679,7 +2680,7 @@ But:
 Result:
 
 ```js
--1
+-1;
 ```
 
 ---
@@ -2716,7 +2717,7 @@ Conceptually:
 Result:
 
 ```js
-""
+"";
 ```
 
 ---
@@ -2724,7 +2725,7 @@ Result:
 # `[] + {}`
 
 ```js
-[] + {}
+[] + {};
 ```
 
 Conceptually:
@@ -2739,7 +2740,7 @@ Conceptually:
 Result:
 
 ```js
-"[object Object]"
+"[object Object]";
 ```
 
 ---
@@ -2749,7 +2750,9 @@ Result:
 This is tricky because JavaScript's parser matters.
 
 ```js
-{} + []
+{
+}
++[];
 ```
 
 At the beginning of a statement, `{}` can be interpreted as an empty block rather than an object literal.
@@ -2757,7 +2760,7 @@ At the beginning of a statement, `{}` can be interpreted as an empty block rathe
 But:
 
 ```js
-({} + [])
+({}) + [];
 ```
 
 forces `{}` to be treated as an object expression.
@@ -2765,7 +2768,7 @@ forces `{}` to be treated as an object expression.
 Result:
 
 ```js
-({} + []) // "[object Object]"
+({}) + []; // "[object Object]"
 ```
 
 ### Interview Lesson
@@ -2773,7 +2776,9 @@ Result:
 Don't blindly memorize the output of:
 
 ```js
-{} + []
+{
+}
++[];
 ```
 
 The parsing context matters.
@@ -2797,21 +2802,21 @@ The parsing context matters.
 ## 3. Boolean + Number
 
 ```js
-true + 1;  // 2
+true + 1; // 2
 false + 1; // 1
 ```
 
 ## 4. String + Boolean
 
 ```js
-"5" + true;  // "5true"
+"5" + true; // "5true"
 "5" + false; // "5false"
 ```
 
 ## 5. String - Boolean
 
 ```js
-"5" - true;  // 4
+"5" - true; // 4
 "5" - false; // 5
 ```
 
@@ -2858,7 +2863,7 @@ undefined * 5; // NaN
 ## 12. Equality Preview
 
 ```js
-null == 0;  // false
+null == 0; // false
 null === 0; // false
 ```
 
@@ -2982,17 +2987,1193 @@ Conversion → usually explicit
 
 # Key Takeaways
 
-* Type coercion = conversion between types during an operation.
-* Implicit coercion happens automatically.
-* Explicit conversion is performed by the developer.
-* `+` is special.
-* `+` can perform addition or string concatenation.
-* `-`, `*`, `/`, `%` generally force numeric conversion.
-* `true → 1` during numeric conversion.
-* `false → 0` during numeric conversion.
-* `null → 0` during numeric conversion.
-* `undefined → NaN` during numeric conversion.
-* `NaN` is the result of an invalid numeric conversion.
-* Objects/arrays can be converted to primitive values.
-* Don't memorize random coercion outputs; identify the operator and derive the conversion.
-* `==` has special coercion rules; `===` compares without type coercion.
+- Type coercion = conversion between types during an operation.
+- Implicit coercion happens automatically.
+- Explicit conversion is performed by the developer.
+- `+` is special.
+- `+` can perform addition or string concatenation.
+- `-`, `*`, `/`, `%` generally force numeric conversion.
+- `true → 1` during numeric conversion.
+- `false → 0` during numeric conversion.
+- `null → 0` during numeric conversion.
+- `undefined → NaN` during numeric conversion.
+- `NaN` is the result of an invalid numeric conversion.
+- Objects/arrays can be converted to primitive values.
+- Don't memorize random coercion outputs; identify the operator and derive the conversion.
+- `==` has special coercion rules; `===` compares without type coercion.
+
+# JavaScript: Equality, Values & Operators
+
+Interview-focused notes covering:
+
+- `==` vs `===`
+- Truthy / Falsy
+- `null` vs `undefined`
+- `NaN`
+- `typeof`
+- `instanceof` _(to revisit with Prototypes)_
+- Optional Chaining `?.`
+- Nullish Coalescing `??`
+
+---
+
+## 1. `==` vs `===`
+
+### `==` — Loose Equality
+
+Allows **type coercion** before comparison.
+
+```js
+5 == "5"; // true
+0 == false; // true
+```
+
+### `===` — Strict Equality
+
+Checks both **value and type** without coercion.
+
+```js
+5 === "5"; // false
+0 === false; // false
+```
+
+### Mental Model
+
+```text
+==
+
+Different types?
+     ↓
+Type coercion may happen
+     ↓
+Compare
+
+
+===
+
+Different types?
+     ↓
+YES → false
+NO  → compare values
+```
+
+### Important Trap
+
+```js
+null == undefined; // true
+null === undefined; // false
+
+null == 0; // false
+null == false; // false
+```
+
+`null` and `undefined` have a special relationship under `==`.
+
+### Interview Rule
+
+> Prefer `===` in normal application code because it avoids unexpected type coercion.
+
+---
+
+# 2. Truthy / Falsy
+
+JavaScript converts values to Boolean when they are used in a Boolean context.
+
+```js
+if (value) {
+  // ...
+}
+```
+
+### Falsy Values
+
+The main falsy values are:
+
+```js
+false;
+0 - 0;
+0n;
+("");
+null;
+undefined;
+NaN;
+```
+
+Everything else is generally **truthy**.
+
+### Important Traps
+
+```js
+Boolean("0"); // true
+Boolean("false"); // true
+
+Boolean([]); // true
+Boolean({}); // true
+```
+
+An empty string is falsy, but an empty array/object is truthy.
+
+### Mental Model
+
+```text
+Value
+  ↓
+Is it one of JavaScript's falsy values?
+  ↓
+YES → false
+NO  → true
+```
+
+### Interview Trap
+
+```js
+if ([]) {
+  console.log("Yes");
+}
+```
+
+Output:
+
+```text
+Yes
+```
+
+Because arrays are objects, and objects are truthy.
+
+---
+
+# 3. `null` vs `undefined`
+
+### `undefined`
+
+Usually means:
+
+> A value hasn't been assigned/provided.
+
+```js
+let user;
+
+console.log(user); // undefined
+```
+
+### `null`
+
+Usually means:
+
+> The developer intentionally represents "no value".
+
+```js
+let user = null;
+```
+
+### Mental Model
+
+```text
+undefined
+    ↓
+Value is missing / not assigned
+
+
+null
+    ↓
+Value is intentionally empty
+```
+
+### Equality
+
+```js
+null == undefined; // true
+null === undefined; // false
+```
+
+### Famous Trap
+
+```js
+typeof null; // "object"
+```
+
+This is a historical JavaScript behavior.
+
+`null` conceptually represents an absence of value; `typeof` reporting `"object"` is legacy behavior.
+
+### Interview-ready Explanation
+
+> "`undefined` generally represents a missing or unassigned value, while `null` is an explicitly assigned empty value. `null == undefined` is true because of a special loose-equality rule, but strict equality returns false."
+
+---
+
+# 4. `NaN`
+
+`NaN` means **Not-a-Number**.
+
+It represents an invalid numeric result.
+
+```js
+"hello" * 2; // NaN
+0 / 0; // NaN
+```
+
+### Famous Trap
+
+```js
+typeof NaN; // "number"
+```
+
+`NaN` belongs to JavaScript's `Number` type.
+
+### Another Trap
+
+```js
+NaN === NaN; // false
+```
+
+`NaN` is not equal to itself using normal equality.
+
+### Correct Check
+
+Prefer:
+
+```js
+Number.isNaN(value);
+```
+
+### `Number.isNaN()` vs `isNaN()`
+
+```js
+Number.isNaN("hello");
+// false
+```
+
+It does **not** perform type coercion.
+
+Global `isNaN()` performs conversion:
+
+```js
+isNaN("hello");
+// true
+```
+
+Because:
+
+```text
+"hello"
+   ↓
+Number("hello")
+   ↓
+NaN
+   ↓
+isNaN → true
+```
+
+But:
+
+```js
+isNaN("123");
+// false
+```
+
+because `"123"` converts to `123`.
+
+### Interview Rule
+
+> Use `Number.isNaN()` when you specifically want to detect the actual `NaN` value.
+
+---
+
+# 5. `typeof`
+
+`typeof` tells you the runtime type category of a value.
+
+```js
+typeof "hello"; // "string"
+typeof 42; // "number"
+typeof true; // "boolean"
+typeof undefined; // "undefined"
+typeof null; // "object"
+typeof {}; // "object"
+typeof []; // "object"
+typeof function () {}; // "function"
+typeof Symbol(); // "symbol"
+typeof 10n; // "bigint"
+```
+
+### Famous Traps
+
+```js
+typeof null; // "object"
+typeof []; // "object"
+```
+
+### Arrays
+
+`typeof` cannot specifically identify arrays.
+
+Use:
+
+```js
+Array.isArray([]);
+```
+
+Result:
+
+```js
+true;
+```
+
+### Mental Model
+
+```text
+typeof value
+     ↓
+Runtime type category
+```
+
+It doesn't give you a complete description of an object's structure.
+
+---
+
+# 6. `instanceof`
+
+We only introduced this topic and intentionally postponed detailed practice until learning **Prototypes and the Prototype Chain**.
+
+Core idea:
+
+> `instanceof` checks whether a constructor's `.prototype` exists somewhere in an object's prototype chain.
+
+Example:
+
+```js
+const arr = [];
+
+arr instanceof Array; // true
+arr instanceof Object; // true
+```
+
+Mental model:
+
+```text
+arr
+ ↓
+Array.prototype
+ ↓
+Object.prototype
+ ↓
+null
+```
+
+When we cover:
+
+```text
+Objects
+ ↓
+Prototype
+ ↓
+Prototype Chain
+ ↓
+Constructor Functions
+ ↓
+instanceof
+ ↓
+Classes
+```
+
+we will revisit this properly with output questions and interview traps.
+
+---
+
+# 7. Optional Chaining `?.`
+
+Optional chaining safely accesses properties/methods when a value may be `null` or `undefined`.
+
+Without it:
+
+```js
+const user = {};
+
+user.profile.name;
+// TypeError
+```
+
+With it:
+
+```js
+user.profile?.name;
+// undefined
+```
+
+### Mental Model
+
+```text
+user.profile?.name
+       ↓
+Is profile null/undefined?
+       ↓
+YES → undefined
+NO  → access name
+```
+
+### Nested Optional Chaining
+
+```js
+user?.profile?.address?.city;
+```
+
+Each `?.` protects that particular chain segment.
+
+### Function Calls
+
+```js
+const user = {};
+
+user.login?.();
+// undefined
+```
+
+Without `?.`:
+
+```js
+user.login();
+// TypeError
+```
+
+### Important Trap
+
+This:
+
+```js
+user.profile?.address.city;
+```
+
+does **NOT** fully protect the chain.
+
+If `address` is `undefined`, JavaScript eventually evaluates:
+
+```js
+undefined.city;
+```
+
+→ `TypeError`
+
+Use:
+
+```js
+user.profile?.address?.city;
+```
+
+if `address` may also be missing.
+
+### Interview Rule
+
+> Optional chaining prevents errors when the value immediately before `?.` is `null` or `undefined`, returning `undefined` instead.
+
+---
+
+# 8. Nullish Coalescing `??`
+
+`??` provides a fallback when the left side is specifically:
+
+```js
+null;
+```
+
+or
+
+```js
+undefined;
+```
+
+Example:
+
+```js
+const name = null ?? "Guest";
+
+console.log(name);
+// "Guest"
+```
+
+### Mental Model
+
+```text
+value
+ ↓
+null or undefined?
+ ↓
+YES → use fallback
+NO  → use original value
+```
+
+### Important Difference: `??` vs `||`
+
+`||` checks **truthiness**.
+
+`??` checks only **nullish values**:
+
+```text
+null
+undefined
+```
+
+Therefore:
+
+```js
+0 || 100;
+// 100
+
+0 ?? 100;
+// 0
+```
+
+More examples:
+
+```js
+"" || "Guest"; // "Guest"
+"" ?? "Guest"; // ""
+
+false || true; // true
+false ?? true; // false
+
+null || "Guest"; // "Guest"
+null ?? "Guest"; // "Guest"
+
+undefined || 10; // 10
+undefined ?? 10; // 10
+```
+
+### Practical Use
+
+Suppose `0` is a valid value:
+
+```js
+const quantity = 0;
+
+const result = quantity ?? 10;
+
+console.log(result);
+// 0
+```
+
+Using `||` would incorrectly replace it:
+
+```js
+const result = quantity || 10;
+
+// 10
+```
+
+### Interview Rule
+
+> Use `??` when you want a fallback only for `null` or `undefined`. Use `||` when you intentionally want a fallback for any falsy value.
+
+---
+
+# Quick Interview Cheat Sheet
+
+| Concept             | Key Rule                                                   |     |                           |
+| ------------------- | ---------------------------------------------------------- | --- | ------------------------- |
+| `==`                | Allows type coercion                                       |     |                           |
+| `===`               | Compares type + value without coercion                     |     |                           |
+| Truthy              | Values that become `true` in Boolean context               |     |                           |
+| Falsy               | `false`, `0`, `-0`, `0n`, `""`, `null`, `undefined`, `NaN` |     |                           |
+| `undefined`         | Generally missing/unassigned value                         |     |                           |
+| `null`              | Explicitly represents absence of value                     |     |                           |
+| `NaN`               | Invalid numeric result                                     |     |                           |
+| `typeof NaN`        | `"number"`                                                 |     |                           |
+| `typeof null`       | `"object"` — historical behavior                           |     |                           |
+| `typeof []`         | `"object"`                                                 |     |                           |
+| `Array.isArray([])` | `true`                                                     |     |                           |
+| `instanceof`        | Checks prototype-chain relationship                        |     |                           |
+| `?.`                | Safely accesses/calls when value may be nullish            |     |                           |
+| `??`                | Fallback only for `null` / `undefined`                     |     |                           |
+| `                   |                                                            | `   | Fallback for falsy values |
+
+---
+
+# Key Interview Traps
+
+```js
+typeof null;
+// "object"
+```
+
+```js
+typeof NaN;
+// "number"
+```
+
+```js
+NaN === NaN;
+// false
+```
+
+```js
+Boolean([]);
+// true
+```
+
+```js
+Boolean({});
+// true
+```
+
+```js
+null == undefined;
+// true
+```
+
+```js
+null === undefined;
+// false
+```
+
+```js
+0 || 100;
+// 100
+```
+
+```js
+0 ?? 100;
+// 0
+```
+
+```js
+"" || "Guest";
+// "Guest"
+```
+
+```js
+"" ?? "Guest";
+// ""
+```
+
+```js
+user.profile?.address.city;
+// Can still throw if address is undefined
+```
+
+```js
+user.profile?.address?.city;
+// Safely returns undefined
+```
+
+---
+
+# Core Mental Models
+
+## Equality
+
+```text
+==  → "Can coercion make these equal?"
+=== → "Are type AND value already equal?"
+```
+
+## Truthiness
+
+```text
+Value
+ ↓
+Falsy value?
+ ↓
+YES → false
+NO  → true
+```
+
+## Optional Chaining
+
+```text
+value?.property
+       ↓
+null / undefined?
+       ↓
+YES → undefined
+NO  → continue
+```
+
+## Nullish Coalescing
+
+```text
+value ?? fallback
+       ↓
+null / undefined?
+       ↓
+YES → fallback
+NO  → value
+```
+
+---
+
+# Final Takeaways
+
+1. Prefer `===` over `==` unless you intentionally need loose equality.
+2. Learn the falsy values instead of assuming "empty" means falsy.
+3. `null` and `undefined` are different concepts.
+4. `NaN` is a `number` and is not equal to itself.
+5. `Number.isNaN()` is generally safer for detecting `NaN`.
+6. `typeof` has historical traps, especially `typeof null`.
+7. `instanceof` becomes much easier after understanding prototypes.
+8. `?.` prevents errors when accessing potentially nullish values.
+9. `??` is different from `||`: it only treats `null` and `undefined` as missing.
+10. For interview questions, derive the result from the underlying rule instead of memorizing outputs.
+
+# JavaScript Strict Mode
+
+Strict Mode makes JavaScript enforce stricter rules and helps catch certain programming mistakes that non-strict/sloppy mode may silently allow.
+
+Enable it with:
+
+```js
+"use strict";
+```
+
+It can be applied to an entire script or to a specific function.
+
+---
+
+## 1. Why Strict Mode?
+
+Without strict mode, some problematic operations may be silently accepted.
+
+With strict mode, JavaScript often throws an error instead.
+
+### Mental Model
+
+```text
+Non-strict / Sloppy Mode
+        ↓
+Some problematic operations
+        ↓
+JavaScript may tolerate them
+
+
+Strict Mode
+        ↓
+Same operation
+        ↓
+JavaScript throws an error
+```
+
+The goal is to catch mistakes earlier and make JavaScript behavior more predictable.
+
+---
+
+# 2. Enabling Strict Mode
+
+### Entire script
+
+```js
+"use strict";
+
+const name = "Vipin";
+```
+
+Everything in that script runs in strict mode.
+
+### Function-level
+
+```js
+function test() {
+  "use strict";
+
+  // strict mode only inside this function
+}
+```
+
+---
+
+# 3. Accidental Global Variables
+
+One of the most common strict-mode examples:
+
+### Non-strict
+
+```js
+x = 10;
+
+console.log(x);
+```
+
+In classic non-strict script environments, this can create/assign a global variable.
+
+### Strict mode
+
+```js
+"use strict";
+
+x = 10;
+```
+
+Throws:
+
+```text
+ReferenceError
+```
+
+### Why?
+
+You attempted to assign a value to an undeclared variable.
+
+Strict mode forces you to explicitly declare variables:
+
+```js
+"use strict";
+
+let x = 10;
+```
+
+---
+
+# 4. Assigning to Read-Only Properties
+
+Consider:
+
+```js
+const obj = {};
+
+Object.defineProperty(obj, "name", {
+  value: "Vipin",
+  writable: false,
+});
+```
+
+Now `name` cannot be changed.
+
+### Strict mode
+
+```js
+"use strict";
+
+obj.name = "John";
+```
+
+Throws:
+
+```text
+TypeError
+```
+
+In non-strict mode, this kind of invalid assignment can fail silently.
+
+### Mental Model
+
+```text
+Non-strict
+invalid assignment
+      ↓
+may fail silently
+
+
+Strict
+invalid assignment
+      ↓
+TypeError
+```
+
+---
+
+# 5. Deleting Variables
+
+Strict mode does not allow deleting declared variables.
+
+```js
+"use strict";
+
+let x = 10;
+
+delete x;
+```
+
+This results in a:
+
+```text
+SyntaxError
+```
+
+---
+
+# 6. Strict Mode and `this`
+
+This is an important strict-mode behavior, but the complete `this` topic will be covered separately.
+
+For a **regular function called without an object**, strict mode gives:
+
+```js
+"use strict";
+
+function test() {
+  console.log(this);
+}
+
+test();
+```
+
+Output:
+
+```text
+undefined
+```
+
+### Non-strict
+
+In a classic browser script, a plain function call traditionally gets the global object:
+
+```js
+function test() {
+  console.log(this);
+}
+
+test();
+
+// window
+```
+
+### Mental Model
+
+```text
+test()
+ ↓
+Plain function call
+ ↓
+Strict?
+ ├── YES → this = undefined
+ └── NO  → global object in classic non-strict scripts
+```
+
+---
+
+# 7. Strict Mode Does NOT Mean `this` Is Always `undefined`
+
+This is an important distinction.
+
+```js
+"use strict";
+
+const user = {
+  name: "Vipin",
+
+  greet() {
+    console.log(this.name);
+  },
+};
+
+user.greet();
+```
+
+Output:
+
+```text
+Vipin
+```
+
+Why?
+
+Because:
+
+```js
+user.greet();
+```
+
+is a **method call**.
+
+The object before `.` becomes the `this` value:
+
+```text
+user.greet()
+    ↑
+    this
+```
+
+So:
+
+```js
+this === user;
+```
+
+is `true`.
+
+---
+
+# 8. Detached Method Trap
+
+Consider:
+
+```js
+"use strict";
+
+const user = {
+  name: "Vipin",
+
+  greet() {
+    console.log(this.name);
+  },
+};
+
+user.greet();
+```
+
+Output:
+
+```text
+Vipin
+```
+
+But:
+
+```js
+const fn = user.greet;
+
+fn();
+```
+
+is different.
+
+Now it is a plain function call:
+
+```text
+user.greet()
+     ↓
+     this = user
+
+
+fn()
+ ↓
+plain function call
+ ↓
+this = undefined
+```
+
+Therefore:
+
+```js
+this.name;
+```
+
+attempts to access `.name` on `undefined`, causing:
+
+```text
+TypeError
+```
+
+### Interview takeaway
+
+> The function itself did not change. The way the function was called changed.
+
+The complete behavior of `this`, including arrow functions, `call`, `apply`, `bind`, constructors, classes, and event handlers, should be studied separately.
+
+---
+
+# 9. Strict vs Non-Strict — Quick Comparison
+
+| Behavior                       | Strict Mode      | Non-Strict Mode                  |
+| ------------------------------ | ---------------- | -------------------------------- |
+| Undeclared variable assignment | `ReferenceError` | May create/assign global         |
+| Invalid read-only assignment   | `TypeError`      | May fail silently                |
+| Delete declared variable       | `SyntaxError`    | Different/sloppy behavior        |
+| Plain regular function `this`  | `undefined`      | Global object in classic scripts |
+| General error handling         | Stricter         | More permissive                  |
+
+---
+
+# 10. Interview Traps
+
+### Trap 1 — Undeclared variable
+
+```js
+"use strict";
+
+x = 10;
+```
+
+```text
+ReferenceError
+```
+
+---
+
+### Trap 2 — `this` in a plain function
+
+```js
+"use strict";
+
+function test() {
+  console.log(this);
+}
+
+test();
+```
+
+```text
+undefined
+```
+
+---
+
+### Trap 3 — Method call
+
+```js
+"use strict";
+
+const user = {
+  name: "Vipin",
+
+  greet() {
+    console.log(this.name);
+  },
+};
+
+user.greet();
+```
+
+```text
+Vipin
+```
+
+Strict mode doesn't make method-call `this` become `undefined`.
+
+---
+
+### Trap 4 — Detached method
+
+```js
+"use strict";
+
+const user = {
+  name: "Vipin",
+
+  greet() {
+    console.log(this.name);
+  },
+};
+
+const fn = user.greet;
+
+fn();
+```
+
+This throws a `TypeError` because `this` is `undefined`.
+
+---
+
+# 11. Interview-Ready Explanation
+
+> "Strict mode is enabled using `'use strict'` and makes JavaScript enforce stricter rules. It prevents things like accidental global variable creation and causes certain invalid operations to throw errors instead of failing silently. It also changes the behavior of `this` in a plain regular function call: in strict mode, `this` is `undefined` instead of being automatically substituted with the global object. However, `this` in a method call still depends on the call site. I'll treat the complete `this` behavior separately because it also involves arrow functions, call/apply/bind, constructors, and prototypes."
+
+---
+
+# Key Takeaways
+
+```text
+"use strict"
+     ↓
+Stricter JavaScript behavior
+```
+
+Remember:
+
+1. Strict mode catches certain programming mistakes.
+2. Use `"use strict"` to enable it.
+3. Undeclared assignments throw `ReferenceError`.
+4. Invalid assignments that may silently fail in sloppy mode can throw errors.
+5. Declared variables cannot be deleted.
+6. Plain regular function call → `this === undefined` in strict mode.
+7. Method call → `this` is still determined by the object used for the call.
+8. Detached methods can lose their original `this`.
+9. Arrow-function `this` and the complete `this` mechanism will be covered separately.
